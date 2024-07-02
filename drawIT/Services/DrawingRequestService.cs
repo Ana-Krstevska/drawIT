@@ -1,4 +1,5 @@
 ﻿using drawIT.API.Services.Interfaces;
+using drawIT.Database;
 using drawIT.Models;
 using HtmlAgilityPack;
 
@@ -8,7 +9,12 @@ namespace drawIT.API.Services
     public class DrawingRequestService : IDrawingRequestService
     {
         private static readonly HttpClient client = new HttpClient();
-        public DrawingRequestService() { }
+        private readonly IAzureServiceDbContext _context;
+
+        public DrawingRequestService(IAzureServiceDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<bool> RegisterDrawingRequestAsync()
         {
@@ -20,8 +26,10 @@ namespace drawIT.API.Services
             return null;
         }
 
-        public async Task<string[]> GetCloudServicesAsync()
+        public async Task<List<AzureService>> GetCloudServicesAsync()
         {
+            var azureServices = new List<AzureService>();
+
             var response = await client.GetAsync("https://azure.microsoft.com/en-us/products/");
             var pageContents = await response.Content.ReadAsStringAsync();
 
@@ -30,14 +38,15 @@ namespace drawIT.API.Services
 
             var headers = pageDocument.DocumentNode.Descendants("h3")
                 .Where(h => h.Attributes.Contains("class") && h.Attributes["class"].Value.Contains("h5"))
-                .Select(h => h.InnerText)
-                .ToArray();
+                .Select(h => h.InnerText);
 
             foreach (var header in headers)
             {
-                Console.WriteLine(header);
+                azureServices.Add(new AzureService { Name = header });
             }
-            return null;
+
+            return azureServices;
         }
+
     }
 }

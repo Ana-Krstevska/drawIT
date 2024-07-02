@@ -1,4 +1,5 @@
 using drawIT.API.Services.Interfaces;
+using drawIT.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace drawIT.Controllers
@@ -18,11 +19,11 @@ namespace drawIT.Controllers
         }
 
         [HttpGet(Name = "GetCloudServices")]
-        public async Task<ActionResult<string[]>> GetCloudServices()
+        public async Task<ActionResult<List<AzureService>>> GetCloudServices()
         {
             try
             {
-                var cloudServices = await _drawingRequestService.GetCloudServicesAsync();
+                List<AzureService> cloudServices = await _drawingRequestService.GetCloudServicesAsync();
                 if (cloudServices == null)
                 {
                     _logger.LogError("No cloud services found");

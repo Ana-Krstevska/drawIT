@@ -4,7 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>b15f70cc-b8fc-4135-a58e-05c90ea783dc</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
@@ -14,10 +13,6 @@
     <PackageReference Include="MongoDB.Bson" Version="2.27.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.27.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
 </Project>

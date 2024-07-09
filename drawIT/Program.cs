@@ -1,6 +1,8 @@
 using drawIT.API.Services;
 using drawIT.API.Services.Interfaces;
 using drawIT.Database;
+using drawIT.Services;
+using drawIT.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IApplicationBuilder, ApplicationBuilder>();  
+builder.Services.AddScoped<IAzureServiceScraper, AzureServiceScraper>();
 builder.Services.AddScoped<IDrawingRequestService, DrawingRequestService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddSingleton<IAzureServiceDbContext, AzureServiceDbContext>();

@@ -1,7 +1,8 @@
 ﻿using drawIT.API.Services.Interfaces;
 using drawIT.Database;
 using drawIT.Models;
-using HtmlAgilityPack;
+using drawIT.Services.Interfaces;
+using MongoDB.Driver;
 
 
 namespace drawIT.API.Services
@@ -9,11 +10,16 @@ namespace drawIT.API.Services
     public class DrawingRequestService : IDrawingRequestService
     {
         private static readonly HttpClient client = new HttpClient();
+        private readonly IAzureServiceScraper _azureServiceScraper;
         private readonly IAzureServiceDbContext _context;
+        private readonly ILogger<DrawingRequestService> _logger;
 
-        public DrawingRequestService(IAzureServiceDbContext context)
+        public DrawingRequestService(IAzureServiceDbContext context,
+            IAzureServiceScraper azureServiceScraper, ILogger<DrawingRequestService> logger)
         {
             _context = context;
+            _logger = logger;
+            _azureServiceScraper = azureServiceScraper;
         }
 
         public async Task<bool> RegisterDrawingRequestAsync()
@@ -28,21 +34,17 @@ namespace drawIT.API.Services
 
         public async Task<List<AzureService>> GetCloudServicesAsync()
         {
-            var azureServices = new List<AzureService>();
-
-            var response = await client.GetAsync("https://azure.microsoft.com/en-us/products/");
-            var pageContents = await response.Content.ReadAsStringAsync();
-
-            var pageDocument = new HtmlDocument();
-            pageDocument.LoadHtml(pageContents);
-
-            var headers = pageDocument.DocumentNode.Descendants("h3")
-                .Where(h => h.Attributes.Contains("class") && h.Attributes["class"].Value.Contains("h5"))
-                .Select(h => h.InnerText);
-
-            foreach (var header in headers)
+            var azureServices = await _azureServiceScraper.StoreScrapedAzureServices();
+            try
             {
-                azureServices.Add(new AzureService { Name = header });
+                foreach (var azureService in azureServices)
+                {
+                    await _context.AzureServices.InsertOneAsync(azureService);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error writing down records");
             }
 
             return azureServices;

@@ -6,5 +6,6 @@ namespace drawIT.Database
     public interface IAzureServiceDbContext
     {
         IMongoCollection<AzureService> AzureServices { get; }
+        IMongoCollection<AWSService> AWSServices { get; }
     }
 }

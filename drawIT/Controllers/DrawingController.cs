@@ -23,12 +23,14 @@ namespace drawIT.Controllers
         {
             try
             {
+                List<AWSService> awsCloudServices = await _drawingRequestService.GetAWSCloudServicesAsync();
                 List<AzureService> cloudServices = await _drawingRequestService.GetCloudServicesAsync();
                 if (cloudServices == null)
                 {
                     _logger.LogError("No cloud services found");
                     return NotFound("No cloud services found");
                 }
+
                 return cloudServices;
             }
             catch (Exception ex)

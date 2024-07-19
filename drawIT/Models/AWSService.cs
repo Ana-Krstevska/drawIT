@@ -1,5 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace drawIT.Models
 {
@@ -10,5 +10,6 @@ namespace drawIT.Models
         public string? Id { get; set; }
 
         public string? Name { get; set; }
+        public string? Category { get; set; }
     }
 }

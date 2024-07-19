@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IApplicationBuilder, ApplicationBuilder>();  
 builder.Services.AddScoped<IAzureServiceScraper, AzureServiceScraper>();
+builder.Services.AddScoped<IAWSServiceScraper, AWSServiceScraper>();
 builder.Services.AddScoped<IDrawingRequestService, DrawingRequestService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddSingleton<IAzureServiceDbContext, AzureServiceDbContext>();

@@ -1,6 +1,4 @@
-﻿using drawIT.Controllers;
-using drawIT.Models;
-using Microsoft.Extensions.Configuration;
+﻿using drawIT.Models;
 using MongoDB.Driver;
 
 namespace drawIT.Database
@@ -17,7 +15,7 @@ namespace drawIT.Database
             _logger = logger;
 
             var connectionString = Environment.GetEnvironmentVariable("MongoDBConnectionString");
-            var client = new MongoClient(connectionString);
+            var client = new MongoClient("connectionString");
             if (client != null)
                 _database = client.GetDatabase(_configuration.GetValue<string>("Database"));
         }
@@ -31,6 +29,24 @@ namespace drawIT.Database
                     var collectionName = _configuration.GetValue<string>("AzureService");
                     _logger.LogInformation($"Retrieving collection: {collectionName}");
                     return _database.GetCollection<AzureService>(collectionName);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while retrieving AzureServices collection");
+                    throw;
+                }
+            }
+        }
+
+        public IMongoCollection<AWSService> AWSServices
+        {
+            get
+            {
+                try
+                {
+                    var collectionName = _configuration.GetValue<string>("AWSService");
+                    _logger.LogInformation($"Retrieving collection: {collectionName}");
+                    return _database.GetCollection<AWSService>(collectionName);
                 }
                 catch (Exception ex)
                 {

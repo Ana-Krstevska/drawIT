@@ -7,5 +7,6 @@ namespace drawIT.API.Services.Interfaces
         Task<bool> RegisterDrawingRequestAsync();
         Task<DrawingRequest> GetDrawingRequestAsync(string id);
         Task<List<AzureService>> GetCloudServicesAsync();
+        Task<List<AWSService>> GetAWSCloudServicesAsync();
     }
 }

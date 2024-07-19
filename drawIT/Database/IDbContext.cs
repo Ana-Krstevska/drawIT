@@ -3,7 +3,7 @@ using MongoDB.Driver;
 
 namespace drawIT.Database
 {
-    public interface IAzureServiceDbContext
+    public interface IDbContext
     {
         IMongoCollection<AzureService> AzureServices { get; }
         IMongoCollection<AWSService> AWSServices { get; }

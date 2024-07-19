@@ -3,19 +3,19 @@ using MongoDB.Driver;
 
 namespace drawIT.Database
 {
-    public class AzureServiceDbContext : IAzureServiceDbContext
+    public class DbContext : IDbContext
     {
         private readonly IMongoDatabase _database = null;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<AzureServiceDbContext> _logger;
+        private readonly ILogger<DbContext> _logger;
 
-        public AzureServiceDbContext(IConfiguration configuration, ILogger<AzureServiceDbContext> logger)
+        public DbContext(IConfiguration configuration, ILogger<DbContext> logger)
         {
             _configuration = configuration;
             _logger = logger;
 
             var connectionString = Environment.GetEnvironmentVariable("MongoDBConnectionString");
-            var client = new MongoClient("connectionString");
+            var client = new MongoClient(connectionString);
             if (client != null)
                 _database = client.GetDatabase(_configuration.GetValue<string>("Database"));
         }

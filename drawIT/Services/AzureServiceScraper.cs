@@ -7,12 +7,12 @@ namespace drawIT.Services
 {
     public class AzureServiceScraper : IHostedService, IDisposable, IAzureServiceScraper
     {
-        private readonly IAzureServiceDbContext _context;
+        private readonly IDbContext _context;
         private static readonly HttpClient client = new HttpClient();
         private Timer? _timer;
         private readonly ILogger<AzureServiceScraper> _logger;
 
-        public AzureServiceScraper(IAzureServiceDbContext context,
+        public AzureServiceScraper(IDbContext context,
                                     ILogger<AzureServiceScraper> logger)
         {
             _context = context;

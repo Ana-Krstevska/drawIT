@@ -11,11 +11,11 @@ namespace drawIT.API.Services
     {
         private static readonly HttpClient client = new HttpClient();
         private readonly IAzureServiceScraper _azureServiceScraper;
-        private readonly IAzureServiceDbContext _context;
+        private readonly IDbContext _context;
         private readonly ILogger<DrawingRequestService> _logger;
         private readonly IAWSServiceScraper _awsServiceScraper;
 
-        public DrawingRequestService(IAzureServiceDbContext context,
+        public DrawingRequestService(IDbContext context,
             IAzureServiceScraper azureServiceScraper, 
             IAWSServiceScraper awsServiceScraper,
             ILogger<DrawingRequestService> logger)
@@ -39,6 +39,8 @@ namespace drawIT.API.Services
         public async Task<List<AzureService>> GetCloudServicesAsync()
         {
             var azureServices = await _azureServiceScraper.StoreScrapedAzureServices();
+            List<string> duplicatesNames = new List<string>();
+
             try
             {
                 foreach (var azureService in azureServices)
@@ -52,7 +54,8 @@ namespace drawIT.API.Services
                     }
                     else
                     {
-                        _logger.LogInformation($"Service with name {azureService.Name} already exists.");
+                        duplicatesNames.Add(azureService.Name);
+                        _logger.LogInformation($"Duplicate found: Service with name {azureService.Name} already exists.");
                     }
                 }
             }
@@ -61,8 +64,11 @@ namespace drawIT.API.Services
                 _logger.LogError(ex, "Error writing down records");
             }
 
+            _logger.LogInformation($"Total duplicates found: {duplicatesNames.Count}. Names: {string.Join(", ", duplicatesNames)}");
+
             return azureServices;
         }
+
 
         public async Task<List<AWSService>> GetAWSCloudServicesAsync()
         {

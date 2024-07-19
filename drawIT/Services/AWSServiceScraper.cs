@@ -8,7 +8,6 @@ namespace drawIT.Services
 {
     public class AWSServiceScraper : IHostedService, IDisposable, IAWSServiceScraper
     {
-        private static readonly HttpClient client = new HttpClient();
         private Timer? _timer;
         private readonly ILogger<AzureServiceScraper> _logger;
 

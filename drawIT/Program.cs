@@ -18,7 +18,7 @@ builder.Services.AddScoped<IAzureServiceScraper, AzureServiceScraper>();
 builder.Services.AddScoped<IAWSServiceScraper, AWSServiceScraper>();
 builder.Services.AddScoped<IDrawingRequestService, DrawingRequestService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
-builder.Services.AddSingleton<IAzureServiceDbContext, AzureServiceDbContext>();
+builder.Services.AddSingleton<IDbContext, DbContext>();
 
 var app = builder.Build();
 

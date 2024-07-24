@@ -1,11 +1,25 @@
+using drawIT.API.Services;
+using drawIT.API.Services.Interfaces;
+using drawIT.Database;
+using drawIT.Services;
+using drawIT.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
+
+builder.Services.AddScoped<IApplicationBuilder, ApplicationBuilder>();
+builder.Services.AddSingleton<IDbContext, DbContext>();
+builder.Services.AddSingleton<IAzureServiceScraper, AzureServiceScraper>();
+builder.Services.AddSingleton<IAWSServiceScraper, AWSServiceScraper>();
+builder.Services.AddScoped<IDrawingRequestService, DrawingRequestService>();
+builder.Services.AddScoped<IDatabaseService, DatabaseService>();
+
+builder.Services.AddHostedService<AWSServiceScraper>();
+builder.Services.AddHostedService<AzureServiceScraper>();
 
 var app = builder.Build();
 

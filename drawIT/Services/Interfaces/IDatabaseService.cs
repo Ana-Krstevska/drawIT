@@ -5,6 +5,7 @@ namespace drawIT.API.Services.Interfaces
     public interface IDatabaseService
     {
         Task<bool> WriteToDatabase(DrawingRequest drawingRequest);
-        Task<DrawingRequest> ReadFromDatabase();
+        Task<List<AzureService>> GetAllAzureServices();
+        Task<List<AWSService>> GetAllAWSServices();
     }
 }

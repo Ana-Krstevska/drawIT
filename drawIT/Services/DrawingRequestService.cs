@@ -2,9 +2,6 @@
 using drawIT.Database;
 using drawIT.Models;
 using drawIT.Services.Interfaces;
-using MongoDB.Driver;
-
-
 namespace drawIT.API.Services
 {
     public class DrawingRequestService : IDrawingRequestService
@@ -35,83 +32,5 @@ namespace drawIT.API.Services
         {
             return null;
         }
-
-        public async Task<List<AzureService>> GetCloudServicesAsync()
-        {
-            var azureServices = await _azureServiceScraper.StoreScrapedAzureServices();
-            List<string> duplicatesNames = new List<string>();
-
-            try
-            {
-                foreach (var azureService in azureServices)
-                {
-                    var filter = Builders<AzureService>.Filter.Eq(s => s.Name, azureService.Name);
-                    var existingService = await _context.AzureServices.Find(filter).FirstOrDefaultAsync();
-
-                    if (existingService == null)
-                    {
-                        await _context.AzureServices.InsertOneAsync(azureService);
-                    }
-                    else
-                    {
-                        duplicatesNames.Add(azureService.Name);
-                        _logger.LogInformation($"Duplicate found: Service with name {azureService.Name} already exists.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error writing down records");
-            }
-
-            _logger.LogInformation($"Total duplicates found: {duplicatesNames.Count}. Names: {string.Join(", ", duplicatesNames)}");
-
-            return azureServices;
-        }
-
-
-        public async Task<List<AWSService>> GetAWSCloudServicesAsync()
-        {
-            var awsServices = await _awsServiceScraper.StoreScrapedAWSServices(); // make sure this includes the category now    
-            _logger.LogInformation($"Retrieved {awsServices.Count} services from scraper.");
-
-            try
-            {
-                foreach (var awsService in awsServices)
-                {
-                    _logger.LogInformation($"Processing service: {awsService.Name}, category: {awsService.Category}");
-
-                    var filterByName = Builders<AWSService>.Filter.Eq(s => s.Name, awsService.Name);
-                    var existingServices = await _context.AWSServices.Find(filterByName).ToListAsync();
-
-                    if (!existingServices.Any())
-                    {
-                        await _context.AWSServices.InsertOneAsync(awsService);
-                    }
-                    else
-                    {
-                        var isServiceWithSameCategoryExists = existingServices.Any(s => s.Category == awsService.Category);
-                        if (!isServiceWithSameCategoryExists)
-                        {
-                            await _context.AWSServices.InsertOneAsync(awsService);
-                        }
-                        else
-                        {
-                            _logger.LogInformation($"Service with name {awsService.Name} and category {awsService.Category} already exists.");
-                        }
-                    }
-                }
-
-                var countAfterProcessing = await _context.AWSServices.CountDocumentsAsync(_ => true);
-                _logger.LogInformation($"Stored {countAfterProcessing} services.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error writing down records");
-            }
-
-            return awsServices;
-        }
-
     }
 }

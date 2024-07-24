@@ -1,4 +1,5 @@
 ﻿using drawIT.Models;
+using System.Threading.Tasks;
 
 namespace drawIT.Services.Interfaces
 {
@@ -8,5 +9,6 @@ namespace drawIT.Services.Interfaces
         Task StopAsync(CancellationToken cancellationToken);
         void Dispose();
         Task<List<AWSService>> StoreScrapedAWSServices();
+        Task<List<AWSService>> GetAWSCloudServicesAsync();
     }
 }

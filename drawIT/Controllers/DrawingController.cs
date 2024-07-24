@@ -9,35 +9,31 @@ namespace drawIT.Controllers
     public class drawITController : ControllerBase
     {
         private readonly IDrawingRequestService _drawingRequestService;
-
+        private readonly IDatabaseService _databaseService;
         private readonly ILogger<drawITController> _logger;
 
-        public drawITController(ILogger<drawITController> logger, IDrawingRequestService drawingRequestService)
+        public drawITController(ILogger<drawITController> logger, IDrawingRequestService drawingRequestService,
+                                IDatabaseService databaseService)
         {
             _logger = logger;
             _drawingRequestService = drawingRequestService;
+            _databaseService = databaseService;
         }
 
-        [HttpGet(Name = "GetCloudServices")]
-        public async Task<ActionResult<List<AzureService>>> GetCloudServices()
+        [HttpGet]
+        [Route ("GetAzureServices")]
+        public async Task<List<AzureService>> GetAzureServices()
         {
-            try
-            {
-                List<AWSService> awsCloudServices = await _drawingRequestService.GetAWSCloudServicesAsync();
-                List<AzureService> cloudServices = await _drawingRequestService.GetCloudServicesAsync();
-                if (cloudServices == null)
-                {
-                    _logger.LogError("No cloud services found");
-                    return NotFound("No cloud services found");
-                }
+            var azureServices = await _databaseService.GetAllAzureServices();
+            return azureServices;
+        }
 
-                return cloudServices;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving cloud services");
-                return StatusCode(500, "Internal server error");
-            }
+        [HttpGet]
+        [Route("GetAWSServices")]
+        public async Task<List<AWSService>> GetAWSServices()
+        {
+            var awsServices = await _databaseService.GetAllAWSServices();
+            return awsServices;
         }
 
     }

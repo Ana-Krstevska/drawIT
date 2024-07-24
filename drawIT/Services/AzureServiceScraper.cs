@@ -2,21 +2,24 @@
 using drawIT.Models;
 using drawIT.Services.Interfaces;
 using HtmlAgilityPack;
+using MongoDB.Driver;
 
 namespace drawIT.Services
 {
     public class AzureServiceScraper : IHostedService, IDisposable, IAzureServiceScraper
     {
         private readonly IDbContext _context;
-        private static readonly HttpClient client = new HttpClient();
+        private readonly HttpClient _client;
         private Timer? _timer;
         private readonly ILogger<AzureServiceScraper> _logger;
 
         public AzureServiceScraper(IDbContext context,
-                                    ILogger<AzureServiceScraper> logger)
+                                    ILogger<AzureServiceScraper> logger,
+                                    IHttpClientFactory clientFactory)
         {
             _context = context;
             _logger = logger;
+            _client = clientFactory.CreateClient();
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -42,11 +45,11 @@ namespace drawIT.Services
             _timer?.Dispose();
         }
 
-        public async Task<List<AzureService>> StoreScrapedAzureServices()
+        public async Task<List<AzureService>> GetCloudServicesAsync()
         {
             var azureServices = new List<AzureService>();
 
-            var response = await client.GetAsync("https://azure.microsoft.com/en-us/products/");
+            var response = await _client.GetAsync("https://azure.microsoft.com/en-us/products/");
             var pageContents = await response.Content.ReadAsStringAsync();
 
             var pageDocument = new HtmlDocument();
@@ -61,6 +64,39 @@ namespace drawIT.Services
                 var sanitizedHeader = header.Replace("ᴾᴿᴱⱽᴵᴱᵂ", "").Trim();  
                 azureServices.Add(new AzureService { Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString(), Name = sanitizedHeader });
             }
+
+            return azureServices;
+        }
+
+        public async Task<List<AzureService>> StoreScrapedAzureServices()
+        {
+            var azureServices = await GetCloudServicesAsync();
+            List<string> duplicatesNames = new List<string>();
+
+            try
+            {
+                foreach (var azureService in azureServices)
+                {
+                    var filter = Builders<AzureService>.Filter.Eq(s => s.Name, azureService.Name);
+                    var existingService = await _context.AzureServices.Find(filter).FirstOrDefaultAsync();
+
+                    if (existingService == null)
+                    {
+                        await _context.AzureServices.InsertOneAsync(azureService);
+                    }
+                    else
+                    {
+                        duplicatesNames.Add(azureService.Name);
+                        _logger.LogInformation($"Duplicate found: Service with name {azureService.Name} already exists.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error writing down records");
+            }
+
+            _logger.LogInformation($"Total duplicates found: {duplicatesNames.Count}. Names: {string.Join(", ", duplicatesNames)}");
 
             return azureServices;
         }

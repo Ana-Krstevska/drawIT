@@ -8,5 +8,6 @@ namespace drawIT.Services.Interfaces
         Task StopAsync(CancellationToken cancellationToken);
         void Dispose();
         Task<List<AzureService>> StoreScrapedAzureServices();
+        Task<List<AzureService>> GetCloudServicesAsync();
     }
 }

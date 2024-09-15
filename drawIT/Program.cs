@@ -17,9 +17,10 @@ builder.Services.AddSingleton<IAzureServiceScraper, AzureServiceScraper>();
 builder.Services.AddSingleton<IAWSServiceScraper, AWSServiceScraper>();
 builder.Services.AddScoped<IDrawingRequestService, DrawingRequestService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
+builder.Services.AddScoped<ILlamaService, LlamaService>();
 
-builder.Services.AddHostedService<AWSServiceScraper>();
-builder.Services.AddHostedService<AzureServiceScraper>();
+//builder.Services.AddHostedService<AWSServiceScraper>();
+//builder.Services.AddHostedService<AzureServiceScraper>();
 
 var app = builder.Build();
 

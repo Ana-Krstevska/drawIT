@@ -1,4 +1,5 @@
-﻿using drawIT.Services.Interfaces;
+﻿using drawIT.API.Services.Interfaces;
+using drawIT.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Text;
@@ -9,14 +10,17 @@ namespace drawIT.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly IDrawingRequestService _drawingRequestService;
 
-        public LlamaService(HttpClient httpClient, IConfiguration configuration)
+        public LlamaService(HttpClient httpClient, IConfiguration configuration,
+                            IDrawingRequestService drawingRequestService)
         {
             _httpClient = httpClient;
             _configuration = configuration;
+            _drawingRequestService = drawingRequestService;
         }
 
-        public async Task<string> SendPromptToLlamaApiAsync(string userDescription)
+        public async Task SendPromptToLlamaApiAsync(string userDescription)
         {
             var requestUrl = _configuration.GetValue<string>("LLM-URL");
             string currentDirectory = Directory.GetCurrentDirectory();
@@ -41,7 +45,7 @@ namespace drawIT.Services
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return jsonResponse; // write it down in database as Model
+                await _drawingRequestService.RegisterDrawingRequestAsync(jsonResponse);
             }
             else
             {

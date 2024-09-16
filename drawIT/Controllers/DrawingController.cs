@@ -3,6 +3,7 @@ using drawIT.Models;
 using drawIT.Services;
 using drawIT.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace drawIT.Controllers
 {
@@ -41,15 +42,22 @@ namespace drawIT.Controllers
         }
 
         [HttpPost("ProcessPrompt")]
-        public async Task<IActionResult> SendPrompt([FromBody] Request request)
+        public async Task<IActionResult> SendPrompt([FromBody] ConfigurationRequest request)
         {
             if (string.IsNullOrEmpty(request.UserDescription))
             {
                 return BadRequest("Prompt is required.");
             }
 
-            var response = await _llamaService.SendPromptToLlamaApiAsync(request.UserDescription);
-            return Accepted();
+            var wroteRecord = await _databaseService.WriteConfigurationToDatabase(request);
+            
+            if(wroteRecord)
+            {
+                await _llamaService.SendPromptToLlamaApiAsync(request.UserDescription);
+                return Accepted();
+            }
+
+            return StatusCode(500, "Internal server error, failed to write to database.");
         }
     }
 }

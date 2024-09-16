@@ -2,6 +2,6 @@
 {
     public interface ILlamaService
     {
-        Task<string> SendPromptToLlamaApiAsync(string prompt);
+        Task SendPromptToLlamaApiAsync(string prompt);
     }
 }

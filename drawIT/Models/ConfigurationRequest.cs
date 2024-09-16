@@ -2,10 +2,11 @@
 
 namespace drawIT.Models
 {
-    public class Request
+    public class ConfigurationRequest
     {
+        public string? Id {  get; set; }
         public CloudProvider Cloud {  get; set; }
-        public List<string>? Services { get; set; }
+        public List<string>? CloudServices { get; set; }
         public string? UserDescription { get; set; }
     }
 }

@@ -2,9 +2,7 @@
 {
     public class DrawingRequest
     {
-        public string? RequestId { get; set; }
-        public string? CloudProvider { get; set; }
-        public string[]? CloudServices { get; set; }
-        public string? Description { get; set; }
+        public string? Id { get; set; }
+        public List<ServicePair>? Configuration { get; set; }
     }
 }

@@ -55,5 +55,41 @@ namespace drawIT.Database
                 }
             }
         }
+
+        public IMongoCollection<ConfigurationRequest> ConfigurationRequests
+        {
+            get
+            {
+                try
+                {
+                    var collectionName = _configuration.GetValue<string>("ConfigurationRequest");
+                    _logger.LogInformation($"Retrieving collection: {collectionName}");
+                    return _database.GetCollection<ConfigurationRequest>(collectionName);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while retrieving DrawingRequest collection");
+                    throw;
+                }
+            }
+        }
+
+        public IMongoCollection<DrawingRequest> DrawingRequests
+        {
+            get
+            {
+                try
+                {
+                    var collectionName = _configuration.GetValue<string>("DrawingRequest");
+                    _logger.LogInformation($"Retrieving collection: {collectionName}");
+                    return _database.GetCollection<DrawingRequest>(collectionName);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while retrieving DrawingRequest collection");
+                    throw;
+                }
+            }
+        }
     }
 }

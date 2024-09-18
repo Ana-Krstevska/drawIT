@@ -1,1 +1,1 @@
-Format your output like this: Service1 to Service2, Service 2 to Service 3 and so on. Return answer in one line, separate pairs with “;”, make a pair using “to”. Look at the next sentences and pull a list of all azure services and the flow of data from one service to another. 
+Format your output like this: Name of Service 1 to Name of Service2, Name of Service2 to Name of Service3 and so on. Return answer in one line, separate pairs with “;”, make a pair using “to”. Look at the next sentences and answer in the instructed manner.

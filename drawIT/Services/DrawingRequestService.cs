@@ -1,8 +1,6 @@
 ﻿using drawIT.API.Services.Interfaces;
 using drawIT.Database;
 using drawIT.Models;
-using drawIT.Services.Interfaces;
-using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
 namespace drawIT.API.Services
 {
@@ -25,13 +23,14 @@ namespace drawIT.API.Services
         public DrawingRequest MapResponseToDrawing(string response)
         {
             JObject json = JObject.Parse(response);
-            string content = (string)json.SelectToken("message.content");
-            string[] pairs = content.Split(','); 
+            string content = (string)json["message"]["content"];
+            string[] cleanContent = content.Contains("\n\n") ? content.Split("\n\n") : new string[] { content };
+            string[] pairs = cleanContent.Length > 1 ? cleanContent[1].Split(';') : cleanContent[0].Split(';');
             List<ServicePair> configuration = new List<ServicePair>();
- 
+
             foreach (string pair in pairs)
             { 
-                string[] services = pair.Split("to"); 
+                string[] services = pair.Split(" to "); 
                 configuration.Add(new ServicePair { SourceService = services[0].Trim(), DestinationService = services[1].Trim() });
             }
 
@@ -44,16 +43,17 @@ namespace drawIT.API.Services
             return drawingRequest;
         }
 
-        public async Task<bool> RegisterDrawingRequestAsync(string response)
+        public async Task<DrawingRequest> WriteDrawingRequestToDatabaseAsync(string response)
         {
-            DrawingRequest request = MapResponseToDrawing(response);
-            var wroteRequest = await _databaseService.WriteDrawingToDatabase(request);
-            if(wroteRequest)
+            var request = MapResponseToDrawing(response);
+            var wasWrittenSuccessfully = await _databaseService.WriteDrawingToDatabase(request);
+
+            if (!wasWrittenSuccessfully)
             {
-                return true;
+                throw new InvalidOperationException("Failed to write drawing request to database.");
             }
 
-            return false;
+            return request;
         }
 
         public async Task<DrawingRequest> GetDrawingRequestAsync(string id)

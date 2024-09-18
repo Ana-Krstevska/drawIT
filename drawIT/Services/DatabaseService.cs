@@ -2,7 +2,6 @@
 using drawIT.Database;
 using drawIT.Models;
 using MongoDB.Driver;
-using System.Collections;
 
 namespace drawIT.API.Services
 {

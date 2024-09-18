@@ -1,7 +1,9 @@
-﻿namespace drawIT.Services.Interfaces
+﻿using drawIT.Models;
+
+namespace drawIT.Services.Interfaces
 {
     public interface ILlamaService
     {
-        Task SendPromptToLlamaApiAsync(string prompt);
+        Task<DrawingRequest> SendPromptToLlamaApiAsync(string prompt);
     }
 }

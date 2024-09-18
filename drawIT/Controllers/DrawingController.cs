@@ -53,8 +53,8 @@ namespace drawIT.Controllers
             
             if(wroteRecord)
             {
-                await _llamaService.SendPromptToLlamaApiAsync(request.UserDescription);
-                return Accepted();
+                var processedData = await _llamaService.SendPromptToLlamaApiAsync(request.UserDescription);
+                return Ok(processedData);
             }
 
             return StatusCode(500, "Internal server error, failed to write to database.");

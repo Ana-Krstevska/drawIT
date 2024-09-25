@@ -36,7 +36,6 @@ namespace drawIT.API.Services
 
             DrawingRequest drawingRequest = new DrawingRequest
             {
-                Id = Guid.NewGuid().ToString(),
                 Configuration = configuration
             };
 

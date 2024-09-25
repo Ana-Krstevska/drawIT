@@ -1,9 +1,7 @@
 using drawIT.API.Services.Interfaces;
 using drawIT.Models;
-using drawIT.Services;
 using drawIT.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 
 namespace drawIT.Controllers
 {

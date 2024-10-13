@@ -57,5 +57,13 @@ namespace drawIT.Controllers
 
             return StatusCode(500, "Internal server error, failed to write to database.");
         }
+
+        [HttpPost]
+        [Route("SearchSuggestions")]
+        public async Task<IActionResult> SearchSuggestions([FromBody] SuggestionRequest request)
+        {
+
+            return Ok();
+        }
     }
 }

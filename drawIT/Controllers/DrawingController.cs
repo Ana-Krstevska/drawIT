@@ -12,15 +12,18 @@ namespace drawIT.Controllers
         private readonly IDrawingRequestService _drawingRequestService;
         private readonly ILlamaService _llamaService;
         private readonly IDatabaseService _databaseService;
+        private readonly ISuggestionService _suggestionService;
         private readonly ILogger<drawITController> _logger;
 
         public drawITController(ILogger<drawITController> logger, IDrawingRequestService drawingRequestService,
-                                IDatabaseService databaseService, ILlamaService llamaService)
+                                IDatabaseService databaseService, ILlamaService llamaService,
+                                ISuggestionService suggestionService)
         {
             _logger = logger;
             _drawingRequestService = drawingRequestService;
             _databaseService = databaseService;
             _llamaService = llamaService;
+            _suggestionService = suggestionService;
         }
 
         [HttpGet]
@@ -59,11 +62,19 @@ namespace drawIT.Controllers
         }
 
         [HttpPost]
-        [Route("SearchSuggestions")]
-        public async Task<IActionResult> SearchSuggestions([FromBody] SuggestionRequest request)
+        [Route("SearchAndReturnSuggestions")]
+        public async Task<IActionResult> SearchAndReturnSuggestion([FromBody] SuggestionRequest request)
         {
+            var suggestion = await _suggestionService.CheckSuggestions(request);
+            return Ok(suggestion);
+        }
 
-            return Ok();
+        [HttpGet]
+        [Route("GetDrawingById")]
+        public async Task<IActionResult> GetDrawingById(string id)
+        {
+            var drawingRequest = await _databaseService.GetDrawingById(id);
+            return Ok(drawingRequest);
         }
     }
 }

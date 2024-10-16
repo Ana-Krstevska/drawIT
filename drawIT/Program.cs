@@ -27,6 +27,7 @@ builder.Services.AddSingleton<IAWSServiceScraper, AWSServiceScraper>();
 builder.Services.AddScoped<IDrawingRequestService, DrawingRequestService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddScoped<ILlamaService, LlamaService>();
+builder.Services.AddScoped<ISuggestionService, SuggestionService>();
 
 builder.Services.AddHostedService<AWSServiceScraper>();
 builder.Services.AddHostedService<AzureServiceScraper>();

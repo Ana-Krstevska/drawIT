@@ -70,7 +70,7 @@ namespace drawIT.Controllers
         }
 
         [HttpGet]
-        [Route("GetDrawingById")]
+        [HttpGet("GetDrawingById/{id}")]
         public async Task<IActionResult> GetDrawingById(string id)
         {
             var drawingRequest = await _databaseService.GetDrawingById(id);

@@ -9,5 +9,7 @@ namespace drawIT.Database
         IMongoCollection<AWSService> AWSServices { get; }
         IMongoCollection<ConfigurationRequest> ConfigurationRequests { get; }
         IMongoCollection<DrawingRequest> DrawingRequests { get; }
+        IMongoCollection<SuggestionResponse> AzureSuggestions {  get; }
+        IMongoCollection<SuggestionResponse> AWSSuggestions { get; }
     }
 }

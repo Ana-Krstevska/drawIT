@@ -91,5 +91,41 @@ namespace drawIT.Database
                 }
             }
         }
+
+        public IMongoCollection<SuggestionResponse> AzureSuggestions
+        {
+            get
+            {
+                try
+                {
+                    var collectionName = _configuration.GetValue<string>("AzureSuggestions");
+                    _logger.LogInformation($"Retrieving collection: {collectionName}");
+                    return _database.GetCollection<SuggestionResponse>(collectionName);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while retrieving Azure Suggestions collection");
+                    throw;
+                }
+            }
+        }
+
+        public IMongoCollection<SuggestionResponse> AWSSuggestions
+        {
+            get
+            {
+                try
+                {
+                    var collectionName = _configuration.GetValue<string>("AWSSuggestions");
+                    _logger.LogInformation($"Retrieving collection: {collectionName}");
+                    return _database.GetCollection<SuggestionResponse>(collectionName);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while retrieving Azure Suggestions collection");
+                    throw;
+                }
+            }
+        }
     }
 }

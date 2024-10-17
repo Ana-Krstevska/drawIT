@@ -8,5 +8,8 @@ namespace drawIT.API.Services.Interfaces
         Task<List<AWSService>> GetAllAWSServices();
         Task<bool> WriteConfigurationToDatabase(ConfigurationRequest configurationRequest);
         Task<bool> WriteDrawingToDatabase(DrawingRequest drawingRequest);
+        Task<List<SuggestionResponse>> GetAllAzureSuggestions();
+        Task<List<SuggestionResponse>> GetAllAWSSuggestions();
+        Task<DrawingRequest> GetDrawingById(string id);
     }
 }

@@ -54,5 +54,23 @@ namespace drawIT.API.Services
         {
             return await _context.AWSServices.Find(service => true).ToListAsync();
         }
+
+        public async Task<List<SuggestionResponse>> GetAllAzureSuggestions()
+        {
+            return await _context.AzureSuggestions.Find(service => true).ToListAsync();
+        }
+
+        public async Task<List<SuggestionResponse>> GetAllAWSSuggestions()
+        {
+            return await _context.AWSSuggestions.Find(service => true).ToListAsync();
+        }
+
+        public async Task<DrawingRequest> GetDrawingById(string id)
+        {
+            var filter = Builders<DrawingRequest>.Filter.Eq(d => d.Id, id);
+            var drawingRequest = await _context.DrawingRequests.Find(filter).FirstOrDefaultAsync();
+
+            return drawingRequest;
+        }
     }
 }
